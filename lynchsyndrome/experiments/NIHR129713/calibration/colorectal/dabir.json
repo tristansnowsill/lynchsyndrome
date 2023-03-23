@@ -1,0 +1,12 @@
+{
+    "Dabir_MSI_MLH1": 234,
+    "Dabir_N_MLH1": 288,
+    "Dabir_MSI_MSH2": 162,
+    "Dabir_N_MSH2": 221,
+    "Dabir_MSI_MSH6": 14,
+    "Dabir_N_MSH6": 33,
+    "log_risk_ratio_under60": -0.22493,
+    "se_log_risk_ratio_under60": 0.088916,
+    "log_risk_ratio_lowrisk": -0.31429,
+    "se_log_risk_ratio_lowrisk": 0.117744
+}

@@ -1,0 +1,39 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+simpy = "*"
+numpy = "*"
+scipy = "*"
+pandas = "*"
+python-dotenv = "*"
+matplotlib = "*"
+sphinx = "*"
+autodoc = "*"
+injector = "*"
+seaborn = "*"
+pyarrow = "*"
+more-itertools = "*"
+tqdm = "*"
+
+[dev-packages]
+pytest = "*"
+bump2version = "*"
+Sphinx = "*"
+wheel = "*"
+watchdog = "*"
+flake8 = "*"
+tox = "*"
+coverage = "*"
+twine = "*"
+pytest-mock = "*"
+pytest-runner = "*"
+pytest-cov = "*"
+autodoc = "*"
+sphinx-rtd-theme = "*"
+autopep8 = "*"
+
+[requires]
+python_version = "3.8"

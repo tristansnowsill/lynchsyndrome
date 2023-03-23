@@ -1,0 +1,272 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}\\wsl$\Ubuntu\home\tms211\Projects\lynchsyndrome\lynchsyndrome\experiments\NIHR129713\calibration\colorectal\survival.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}21 Jul 2022, 13:04:06
+{txt}
+{com}. 
+. use "\\wsl$\Ubuntu\home\tms211\Projects\lynchsyndrome\lynchsyndrome\experiments\NIHR129713\calibration\colorectal\ons2018-crc.dta", clear
+{txt}
+{com}. 
+. capture program drop crcsurv
+{txt}
+{com}. program crcsurv
+{txt}  1{com}.         // Suggested to call as follows
+.         //
+.         // . ml model lf crcsurv (t s s_se = [lambda_depvars]) ([theta_depvars])
+.         //
+.         // Where t, s and s_se are the time point, survival estimate, and standard
+.         // error of the survival estimate, lambda_depvars are the variables
+.         // expected to have a linear effect on the log hazard rate, and
+.         // theta_depvars are the variables expected to have a linear effect on the
+.         // log frailty variance.
+.         //
+.         // Most likely the call will be
+.         //
+.         // . ml model lf crcsurv (t s s_se = i.stage i.sex i.agegrp) ()
+.         //
+.         version 17.0
+{txt}  2{com}.         args lnf ln_lambda ln_theta
+{txt}  3{com}.         tempvar lambda theta s_pred
+{txt}  4{com}.         quietly generate double `lambda' = exp(`ln_lambda')
+{txt}  5{com}.         quietly generate double `theta' = exp(`ln_theta')
+{txt}  6{com}.         quietly generate double `s_pred' = (1 + `lambda' * `theta' * $ML_y1) ^ (-1/`theta')
+{txt}  7{com}.         quietly replace `lnf' = lnnormalden(`s_pred', $ML_y2, $ML_y3)
+{txt}  8{com}. end
+{txt}
+{com}. 
+. ml model lf crcsurv (years surv surv_se = i.stage i.sex ib4.agegrp) ()
+{res}{txt}
+{com}. ml check
+{res}{txt}
+{p 0 9 0 78}Test 1:  Calling {res:crcsurv} to check if it computes log likelihood and{break}does not alter coefficient vector...{p_end}
+{col 10}Passed.
+
+{p 0 9 0 78}Test 2:  Calling {res:crcsurv} again to check if the same log likelihood value is returned...{p_end}
+{col 10}Passed.
+
+{p 0 9 0 78}Test 3:  Calling {res:crcsurv} to check if 1st derivatives are computed...{p_end}
+{col 10}test not relevant for type {res:lf} evaluators.
+
+{p 0 9 0 78}Test 4:  Calling {res:crcsurv} again to check if the same 1st derivatives are returned...{p_end}
+{col 10}test not relevant for type {res:lf} evaluators.
+
+{p 0 9 0 78}Test 5:  Calling {res:crcsurv} to check if 2nd derivatives are computed...{p_end}
+{col 10}test not relevant for type {res:lf} evaluators.
+
+{p 0 9 0 78}Test 6:  Calling {res:crcsurv} again to check if the same 2nd derivatives are returned...{p_end}
+{col 10}test not relevant for type {res:lf} evaluators.
+
+{hline 78}
+{p 0 0 0 78}Searching for alternate values for the coefficient vector to verify that {res:crcsurv} returns different results when fed a different coefficient vector:{p_end}
+
+{p 0 0 0 78}Searching...{p_end}
+initial:{col 16}log likelihood = {res:    -<inf>}  (could not be evaluated)
+searching for feasible values {res:+}
+
+feasible:{col 16}log likelihood = {res:-119268.01}
+improving initial values {txt:.}{txt:.}{txt:.}{txt:.}{txt:.}{txt:.}{txt:.}{res:+}{txt:.}{txt:.}
+improve:{col 16}log likelihood = {res:-110967.53}
+
+continuing with tests...
+{hline 78}
+
+{p 0 9 0 78}Test 7:  Calling {res:crcsurv} to check log likelihood at the new values...{p_end}
+{col 10}Passed.
+
+{p 0 9 0 78}Test 8:  Calling {res:crcsurv} requesting 1st derivatives at the new values...{p_end}
+{col 10}test not relevant for type {res:lf} evaluators.
+
+{p 0 9 0 78}Test 9:  Calling {res:crcsurv} requesting 2nd derivatives at the new values...{p_end}
+{col 10}test not relevant for type {res:lf} evaluators.
+{res}
+{hline 78}
+{col 26}crcsurv HAS PASSED ALL TESTS
+{hline 78}
+{txt}
+{p 0 9 0 78}Test 10: Does {res:crcsurv} produce unanticipated output?{break}This is a minor issue.  Stata has been running {res:crcsurv} with all output suppressed.  This time Stata will not suppress the output.  If you see any unanticipated output, you need to place {res:quietly} in front of some of the commands in {res:crcsurv}.{p_end}
+
+{hline 62} begin execution
+{txt}{hline 64} end execution
+
+{com}. ml search
+{res}{txt}initial:{col 16}log likelihood = {res:-110967.53}
+rescale:{col 16}log likelihood = {res:-110967.53}
+rescale eq:{col 16}log likelihood = {res: -97934.23}
+
+{com}. ml maximize
+{res}
+{txt}initial:{col 16}log likelihood = {res: -97934.23}
+rescale:{col 16}log likelihood = {res: -97934.23}
+rescale eq:{col 16}log likelihood = {res: -97934.23}
+{res}{txt}Iteration 0:{space 3}log likelihood = {res: -97934.23}  (not concave)
+Iteration 1:{space 3}log likelihood = {res: -29125.09}  (not concave)
+Iteration 2:{space 3}log likelihood = {res:-14682.582}  (not concave)
+Iteration 3:{space 3}log likelihood = {res:-14415.235}  (not concave)
+Iteration 4:{space 3}log likelihood = {res:-13983.036}  (not concave)
+Iteration 5:{space 3}log likelihood = {res:-9825.6321}  (not concave)
+Iteration 6:{space 3}log likelihood = {res:-8935.1995}  (not concave)
+Iteration 7:{space 3}log likelihood = {res:-8447.5652}  (not concave)
+Iteration 8:{space 3}log likelihood = {res:-8216.6536}  (not concave)
+Iteration 9:{space 3}log likelihood = {res:-8103.6658}  (not concave)
+Iteration 10:{space 2}log likelihood = {res:-8081.7096}  (not concave)
+Iteration 11:{space 2}log likelihood = {res:-8069.7949}  
+Iteration 12:{space 2}log likelihood = {res:-8033.8082}  (backed up)
+Iteration 13:{space 2}log likelihood = {res:-7756.2679}  (not concave)
+Iteration 14:{space 2}log likelihood = {res: -7739.556}  (not concave)
+Iteration 15:{space 2}log likelihood = {res: -7728.636}  (not concave)
+Iteration 16:{space 2}log likelihood = {res:-7717.0922}  (not concave)
+Iteration 17:{space 2}log likelihood = {res:-7693.6785}  (not concave)
+Iteration 18:{space 2}log likelihood = {res:-7680.3848}  (not concave)
+Iteration 19:{space 2}log likelihood = {res:-7670.6805}  (not concave)
+Iteration 20:{space 2}log likelihood = {res:-7662.6407}  (not concave)
+Iteration 21:{space 2}log likelihood = {res:-7654.9671}  (not concave)
+Iteration 22:{space 2}log likelihood = {res:-7646.7111}  (not concave)
+Iteration 23:{space 2}log likelihood = {res:-7638.6539}  (not concave)
+Iteration 24:{space 2}log likelihood = {res:-7630.7752}  (not concave)
+Iteration 25:{space 2}log likelihood = {res:-7622.5876}  (not concave)
+Iteration 26:{space 2}log likelihood = {res:-7614.1664}  (not concave)
+Iteration 27:{space 2}log likelihood = {res:-7605.5982}  (not concave)
+Iteration 28:{space 2}log likelihood = {res:-7596.8879}  (not concave)
+Iteration 29:{space 2}log likelihood = {res:-7587.9249}  (not concave)
+Iteration 30:{space 2}log likelihood = {res: -7578.746}  (not concave)
+Iteration 31:{space 2}log likelihood = {res:-7569.3305}  (not concave)
+Iteration 32:{space 2}log likelihood = {res: -7559.715}  (not concave)
+Iteration 33:{space 2}log likelihood = {res:-7549.8281}  (not concave)
+Iteration 34:{space 2}log likelihood = {res:-7539.7117}  (not concave)
+Iteration 35:{space 2}log likelihood = {res:-7529.3116}  (not concave)
+Iteration 36:{space 2}log likelihood = {res:-7518.6751}  (not concave)
+Iteration 37:{space 2}log likelihood = {res:-7507.7306}  (not concave)
+Iteration 38:{space 2}log likelihood = {res:-7496.5296}  (not concave)
+Iteration 39:{space 2}log likelihood = {res: -7485.007}  (not concave)
+Iteration 40:{space 2}log likelihood = {res:-7473.2134}  (not concave)
+Iteration 41:{space 2}log likelihood = {res:-7461.0632}  (not concave)
+Iteration 42:{space 2}log likelihood = {res:-7448.6246}  (not concave)
+Iteration 43:{space 2}log likelihood = {res:-7435.8192}  (not concave)
+Iteration 44:{space 2}log likelihood = {res: -7422.703}  (not concave)
+Iteration 45:{space 2}log likelihood = {res:-7409.1821}  (not concave)
+Iteration 46:{space 2}log likelihood = {res: -7395.332}  (not concave)
+Iteration 47:{space 2}log likelihood = {res:-7381.0551}  (not concave)
+Iteration 48:{space 2}log likelihood = {res:-7366.4294}  (not concave)
+Iteration 49:{space 2}log likelihood = {res:-7351.3437}  (not concave)
+Iteration 50:{space 2}log likelihood = {res:-7335.8788}  (not concave)
+Iteration 51:{space 2}log likelihood = {res:-7319.9206}  (not concave)
+Iteration 52:{space 2}log likelihood = {res:-7303.5677}  (not concave)
+Iteration 53:{space 2}log likelihood = {res:-7286.6887}  (not concave)
+Iteration 54:{space 2}log likelihood = {res:-7269.3849}  (not concave)
+Iteration 55:{space 2}log likelihood = {res:-7251.5165}  (not concave)
+Iteration 56:{space 2}log likelihood = {res:-7233.1944}  (not concave)
+Iteration 57:{space 2}log likelihood = {res:-7214.2618}  (not concave)
+Iteration 58:{space 2}log likelihood = {res:-7194.8365}  (not concave)
+Iteration 59:{space 2}log likelihood = {res:-7174.7734}  (not concave)
+Iteration 60:{space 2}log likelihood = {res:-7154.2005}  (not concave)
+Iteration 61:{space 2}log likelihood = {res:-7132.9113}  (not concave)
+Iteration 62:{space 2}log likelihood = {res:-7111.0691}  (not concave)
+Iteration 63:{space 2}log likelihood = {res:-7088.4714}  (not concave)
+Iteration 64:{space 2}log likelihood = {res:-7065.2681}  (not concave)
+Iteration 65:{space 2}log likelihood = {res:-7041.2366}  (not concave)
+Iteration 66:{space 2}log likelihood = {res:-7016.5795}  (not concave)
+Iteration 67:{space 2}log likelihood = {res: -6991.038}  (not concave)
+Iteration 68:{space 2}log likelihood = {res: -6964.792}  (not concave)
+Iteration 69:{space 2}log likelihood = {res: -6937.572}  (not concave)
+Iteration 70:{space 2}log likelihood = {res:-6909.5952}  (not concave)
+Iteration 71:{space 2}log likelihood = {res:-6880.5431}  (not concave)
+Iteration 72:{space 2}log likelihood = {res:-6850.6461}  (not concave)
+Iteration 73:{space 2}log likelihood = {res:-6819.5689}  (not concave)
+Iteration 74:{space 2}log likelihood = {res:-6787.5788}  (not concave)
+Iteration 75:{space 2}log likelihood = {res:-6754.2433}  (not concave)
+Iteration 76:{space 2}log likelihood = {res:-6719.8209}  (not concave)
+Iteration 77:{space 2}log likelihood = {res: -6683.848}  (not concave)
+Iteration 78:{space 2}log likelihood = {res:-6646.6414}  (not concave)
+Iteration 79:{space 2}log likelihood = {res:-6607.5927}  (not concave)
+Iteration 80:{space 2}log likelihood = {res: -6566.984}  (not concave)
+Iteration 81:{space 2}log likelihood = {res:-6524.0943}  (not concave)
+Iteration 82:{space 2}log likelihood = {res:-6479.1239}  (not concave)
+Iteration 83:{space 2}log likelihood = {res:-6431.1554}  (not concave)
+Iteration 84:{space 2}log likelihood = {res:-6380.3526}  (not concave)
+Iteration 85:{space 2}log likelihood = {res:-6324.8119}  (not concave)
+Iteration 86:{space 2}log likelihood = {res:-6253.3871}  (not concave)
+Iteration 87:{space 2}log likelihood = {res:-5840.2811}  (not concave)
+Iteration 88:{space 2}log likelihood = {res:-5624.6856}  (not concave)
+Iteration 89:{space 2}log likelihood = {res:-5475.6892}  (not concave)
+Iteration 90:{space 2}log likelihood = {res:-5265.8828}  (not concave)
+Iteration 91:{space 2}log likelihood = {res:-5094.5003}  (not concave)
+Iteration 92:{space 2}log likelihood = {res:-5043.7495}  (not concave)
+Iteration 93:{space 2}log likelihood = {res:-4931.3317}  (not concave)
+Iteration 94:{space 2}log likelihood = {res:-4031.6905}  
+Iteration 95:{space 2}log likelihood = {res:-3731.4318}  
+Iteration 96:{space 2}log likelihood = {res:-1304.7324}  (not concave)
+Iteration 97:{space 2}log likelihood = {res:-291.79045}  (not concave)
+Iteration 98:{space 2}log likelihood = {res: -203.3146}  (not concave)
+Iteration 99:{space 2}log likelihood = {res:-184.98804}  (not concave)
+Iteration 100:{space 1}log likelihood = {res:-170.33413}  (not concave)
+Iteration 101:{space 1}log likelihood = {res:-163.30905}  (not concave)
+Iteration 102:{space 1}log likelihood = {res:-159.02522}  
+Iteration 103:{space 1}log likelihood = {res:-82.041822}  
+Iteration 104:{space 1}log likelihood = {res:-81.182494}  (backed up)
+Iteration 105:{space 1}log likelihood = {res:-79.497463}  
+Iteration 106:{space 1}log likelihood = {res: -79.46387}  
+Iteration 107:{space 1}log likelihood = {res:-79.463869}  
+{res}
+{txt}{col 55}{lalign 13:Number of obs}{col 68} = {res}{ralign 8:78}
+{txt}{col 55}{lalign 13:Wald chi2({res:8})}{col 68} = {res}{ralign 8:22844.37}
+{txt}Log likelihood = {res:-79.463869}{col 55}{lalign 13:Prob > chi2}{col 68} = {res}{ralign 8:0.0000}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |} Coefficient{col 26}  Std. err.{col 38}      z{col 46}   P>|z|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}eq1          {txt}{c |}
+{space 7}stage {c |}
+{space 9}II  {c |}{col 14}{res}{space 2} .9829777{col 26}{space 2} .0480288{col 37}{space 1}   20.47{col 46}{space 3}0.000{col 54}{space 4}  .888843{col 67}{space 3} 1.077112
+{txt}{space 8}III  {c |}{col 14}{res}{space 2} 1.859929{col 26}{space 2} .0455778{col 37}{space 1}   40.81{col 46}{space 3}0.000{col 54}{space 4} 1.770598{col 67}{space 3}  1.94926
+{txt}{space 9}IV  {c |}{col 14}{res}{space 2} 4.286695{col 26}{space 2} .0474692{col 37}{space 1}   90.30{col 46}{space 3}0.000{col 54}{space 4} 4.193657{col 67}{space 3} 4.379733
+{txt}{space 12} {c |}
+{space 9}sex {c |}
+{space 5}Female  {c |}{col 14}{res}{space 2} .0716044{col 26}{space 2} .0133705{col 37}{space 1}    5.36{col 46}{space 3}0.000{col 54}{space 4} .0453987{col 67}{space 3} .0978101
+{txt}{space 12} {c |}
+{space 6}agegrp {c |}
+{space 6}15-44  {c |}{col 14}{res}{space 2}-.5031704{col 26}{space 2} .0333111{col 37}{space 1}  -15.11{col 46}{space 3}0.000{col 54}{space 4}-.5684589{col 67}{space 3}-.4378819
+{txt}{space 6}45-54  {c |}{col 14}{res}{space 2}-.4448724{col 26}{space 2} .0247488{col 37}{space 1}  -17.98{col 46}{space 3}0.000{col 54}{space 4} -.493379{col 67}{space 3}-.3963657
+{txt}{space 6}55-64  {c |}{col 14}{res}{space 2}-.3354247{col 26}{space 2} .0189707{col 37}{space 1}  -17.68{col 46}{space 3}0.000{col 54}{space 4}-.3726066{col 67}{space 3}-.2982428
+{txt}{space 6}75-99  {c |}{col 14}{res}{space 2}  .847569{col 26}{space 2} .0176119{col 37}{space 1}   48.12{col 46}{space 3}0.000{col 54}{space 4} .8130503{col 67}{space 3} .8820878
+{txt}{space 12} {c |}
+{space 7}_cons {c |}{col 14}{res}{space 2}-4.294047{col 26}{space 2} .0453055{col 37}{space 1}  -94.78{col 46}{space 3}0.000{col 54}{space 4}-4.382844{col 67}{space 3}-4.205249
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}eq2          {txt}{c |}
+{space 7}_cons {c |}{col 14}{res}{space 2}-.2581855{col 26}{space 2} .0320737{col 37}{space 1}   -8.05{col 46}{space 3}0.000{col 54}{space 4}-.3210487{col 67}{space 3}-.1953222
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. 
+. estat vce
+{res}
+{txt}Covariance matrix of coefficients of {res:ml} model
+{res}
+{txt}{space 0}{space 13}{c |}{res}{space 1}{lalign 10:eq1}{space 1}{txt}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{c |}{res}{space 1}{lalign 10:eq2}{space 1}{txt}
+{space 0}{space 0}{ralign 12:}{space 1}{c |}{space 1}{ralign 11:2.}{space 0}{space 1}{ralign 11:3.}{space 0}{space 1}{ralign 11:4.}{space 0}{space 1}{ralign 11:1.}{space 0}{space 1}{ralign 11:1.}{space 0}{space 1}{ralign 11:2.}{space 0}{space 1}{ralign 11:3.}{space 0}{space 1}{ralign 11:5.}{space 0}{space 1}{ralign 11:}{space 0}{c |}{space 1}{ralign 11:}{space 0}
+{space 0}{space 0}{ralign 12:e(V)}{space 1}{c |}{space 1}{ralign 10:stage}{space 1}{space 1}{ralign 10:stage}{space 1}{space 1}{ralign 10:stage}{space 1}{space 1}{ralign 10:sex}{space 1}{space 1}{ralign 10:agegrp}{space 1}{space 1}{ralign 10:agegrp}{space 1}{space 1}{ralign 10:agegrp}{space 1}{space 1}{ralign 10:agegrp}{space 1}{space 1}{ralign 10:_cons}{space 1}{c |}{space 1}{ralign 10:_cons}{space 1}
+{space 0}{hline 13}{c   +}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{c   +}{hline 12}
+{space 0}{res:{lalign 13:eq1}}{c |}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{c |}{space 12}
+{space 0}{space 0}{ralign 12:2.stage}{space 1}{c |}{space 1}{ralign 10:{res:{sf: .00230676}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}
+{space 0}{space 0}{ralign 12:3.stage}{space 1}{c |}{space 1}{ralign 10:{res:{sf: .00193064}}}{space 1}{space 1}{ralign 10:{res:{sf: .00207734}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}
+{space 0}{space 0}{ralign 12:4.stage}{space 1}{c |}{space 1}{ralign 10:{res:{sf: .00193978}}}{space 1}{space 1}{ralign 10:{res:{sf: .00196854}}}{space 1}{space 1}{ralign 10:{res:{sf: .00225333}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}
+{space 0}{space 0}{ralign 12:1.sex}{space 1}{c |}{space 1}{ralign 10:{res:{sf: .00001272}}}{space 1}{space 1}{ralign 10:{res:{sf:  .0000201}}}{space 1}{space 1}{ralign 10:{res:{sf: .00002792}}}{space 1}{space 1}{ralign 10:{res:{sf: .00017877}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}
+{space 0}{space 0}{ralign 12:1.agegrp}{space 1}{c |}{space 1}{ralign 10:{res:{sf: 7.437e-06}}}{space 1}{space 1}{ralign 10:{res:{sf: 1.866e-06}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00004234}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00002953}}}{space 1}{space 1}{ralign 10:{res:{sf: .00110963}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}
+{space 0}{space 0}{ralign 12:2.agegrp}{space 1}{c |}{space 1}{ralign 10:{res:{sf:-.00002157}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00002546}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00006586}}}{space 1}{space 1}{ralign 10:{res:{sf:-7.958e-06}}}{space 1}{space 1}{ralign 10:{res:{sf: .00015356}}}{space 1}{space 1}{ralign 10:{res:{sf:  .0006125}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}
+{space 0}{space 0}{ralign 12:3.agegrp}{space 1}{c |}{space 1}{ralign 10:{res:{sf:-.00001068}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00001842}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00004111}}}{space 1}{space 1}{ralign 10:{res:{sf:-3.882e-06}}}{space 1}{space 1}{ralign 10:{res:{sf:  .0001509}}}{space 1}{space 1}{ralign 10:{res:{sf: .00015024}}}{space 1}{space 1}{ralign 10:{res:{sf: .00035989}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}
+{space 0}{space 0}{ralign 12:5.agegrp}{space 1}{c |}{space 1}{ralign 10:{res:{sf:-.00003926}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00001765}}}{space 1}{space 1}{ralign 10:{res:{sf: .00006934}}}{space 1}{space 1}{ralign 10:{res:{sf:-9.901e-06}}}{space 1}{space 1}{ralign 10:{res:{sf: .00013234}}}{space 1}{space 1}{ralign 10:{res:{sf: .00013309}}}{space 1}{space 1}{ralign 10:{res:{sf: .00013692}}}{space 1}{space 1}{ralign 10:{res:{sf: .00031018}}}{space 1}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}
+{space 0}{space 0}{ralign 12:_cons}{space 1}{c |}{space 1}{ralign 10:{res:{sf:-.00191449}}}{space 1}{space 1}{ralign 10:{res:{sf: -.0019206}}}{space 1}{space 1}{ralign 10:{res:{sf: -.0019266}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00009903}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00013512}}}{space 1}{space 1}{ralign 10:{res:{sf: -.0001172}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00013002}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00011482}}}{space 1}{space 1}{ralign 10:{res:{sf: .00205259}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf:{space 10}}}}{space 1}
+{space 0}{hline 13}{c   +}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{hline 12}{c   +}{hline 12}
+{space 0}{res:{lalign 13:eq2}}{c |}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{space 12}{c |}{space 12}
+{space 0}{space 0}{ralign 12:_cons}{space 1}{c |}{space 1}{ralign 10:{res:{sf: .00002783}}}{space 1}{space 1}{ralign 10:{res:{sf: .00008589}}}{space 1}{space 1}{ralign 10:{res:{sf: .00050331}}}{space 1}{space 1}{ralign 10:{res:{sf: 5.434e-06}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00008053}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00007139}}}{space 1}{space 1}{ralign 10:{res:{sf:-.00005099}}}{space 1}{space 1}{ralign 10:{res:{sf:  .0001882}}}{space 1}{space 1}{ralign 10:{res:{sf:-5.143e-06}}}{space 1}{c |}{space 1}{ralign 10:{res:{sf: .00102872}}}{space 1}
+
+{com}. 
+. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}\\wsl$\Ubuntu\home\tms211\Projects\lynchsyndrome\lynchsyndrome\experiments\NIHR129713\calibration\colorectal\survival.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}21 Jul 2022, 13:04:09
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
