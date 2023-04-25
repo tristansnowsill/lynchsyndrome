@@ -105,7 +105,32 @@ def simulate(opts):
         PathwayPoint.COLORECTAL_SURVEILLANCE: { biennial_colonoscopy }
     }
     
-    experiment.add_competing_option(Pathway(basic, 'Nothing'))
+    experiment.add_competing_option(Pathway(dict({
+        PathwayPoint.GYNECOLOGICAL_RISK_REDUCING_SURGERY: { surv_30 },
+        PathwayPoint.GYNAECOLOGICAL_RISK_REDUCING_SURGERY: { force_hbso_35 }
+    }, **basic), 'Surveillance from 30, HBSO at 35'))
+    experiment.add_competing_option(Pathway(dict({
+        PathwayPoint.GYNECOLOGICAL_RISK_REDUCING_SURGERY: { surv_30 },
+        PathwayPoint.GYNAECOLOGICAL_RISK_REDUCING_SURGERY: { force_hbso_40 }
+    }, **basic), 'Surveillance from 30, HBSO at 40'))
+    experiment.add_competing_option(Pathway(dict({
+        PathwayPoint.GYNECOLOGICAL_RISK_REDUCING_SURGERY: { surv_30 },
+        PathwayPoint.GYNAECOLOGICAL_RISK_REDUCING_SURGERY: { force_hbso_50 }
+    }, **basic), 'Surveillance from 30, HBSO at 50'))
+    experiment.add_competing_option(Pathway(dict({
+        PathwayPoint.GYNAECOLOGICAL_SURVEILLANCE: { surv_30 }
+    }, **basic), 'Surveillance from 30'))
+    experiment.add_competing_option(Pathway(dict({
+        PathwayPoint.GYNECOLOGICAL_RISK_REDUCING_SURGERY: { surv_35 },
+        PathwayPoint.GYNAECOLOGICAL_RISK_REDUCING_SURGERY: { force_hbso_40 }
+    }, **basic), 'Surveillance from 35, HBSO at 40'))
+    experiment.add_competing_option(Pathway(dict({
+        PathwayPoint.GYNECOLOGICAL_RISK_REDUCING_SURGERY: { surv_35 },
+        PathwayPoint.GYNAECOLOGICAL_RISK_REDUCING_SURGERY: { force_hbso_50 }
+    }, **basic), 'Surveillance from 35, HBSO at 50'))
+    experiment.add_competing_option(Pathway(dict({
+        PathwayPoint.GYNAECOLOGICAL_SURVEILLANCE: { surv_35 }
+    }, **basic), 'Surveillance from 35'))
     experiment.add_competing_option(Pathway(dict({
         PathwayPoint.GYNAECOLOGICAL_RISK_REDUCING_SURGERY: { force_hbso_35 }
     }, **basic), 'HBSO at 35'))
@@ -115,19 +140,10 @@ def simulate(opts):
     experiment.add_competing_option(Pathway(dict({
         PathwayPoint.GYNAECOLOGICAL_RISK_REDUCING_SURGERY: { force_hbso_50 }
     }, **basic), 'HBSO at 50'))
-    experiment.add_competing_option(Pathway(dict({
-        PathwayPoint.GYNAECOLOGICAL_SURVEILLANCE: { surv_30 }
-    }, **basic), 'Surveillance from 30'))
-    experiment.add_competing_option(Pathway(dict({
-        PathwayPoint.GYNAECOLOGICAL_SURVEILLANCE: { surv_35 }
-    }, **basic), 'Surveillance from 35'))
+    experiment.add_competing_option(Pathway(basic, 'Nothing'))
     experiment.add_competing_option(Pathway(dict({
         PathwayPoint.GYNECOLOGICAL_RISK_REDUCING_SURGERY: { force_two_stage }
     }, **basic), 'Two-stage surgical approach'))
-    experiment.add_competing_option(Pathway(dict({
-        PathwayPoint.GYNECOLOGICAL_RISK_REDUCING_SURGERY: { surv_30 },
-        PathwayPoint.GYNAECOLOGICAL_RISK_REDUCING_SURGERY: { force_hbso_40 }
-    }, **basic), 'Surveillance from 30, HBSO at 40'))
 
     # Set up simple reports to extract event traces and parameters
     experiment.add_events_report('events', lambda x: x)
