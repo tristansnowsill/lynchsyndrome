@@ -17,7 +17,9 @@ if TYPE_CHECKING:
     from lynchsyndrome.individual import Individual
 
 class RiskReducingSurgery(Enum):
+    BILATERAL_OOPHORECTOMY                           = auto()
     BILATERAL_SALPINGO_OOPHORECTOMY                  = auto()
+    BILATERAL_SALPINGECTOMY                          = auto()
     HYSTERECTOMY                                     = auto()
     HYSTERECTOMY_AND_BILATERAL_SALPINGECTOMY         = auto()
     HYSTERECTOMY_AND_BILATERAL_SALPINGO_OOPHORECTOMY = auto()
@@ -39,7 +41,7 @@ class RiskReducingSurgery(Enum):
         if not has_uterus and self is RiskReducingSurgery.HBSO:
             return RiskReducingSurgery.BSO
         if not has_uterus and self is RiskReducingSurgery.HBS:
-            raise NotImplementedError()
+            return RiskReducingSurgery.BILATERAL_SALPINGECTOMY
         return self
 
     def affects_ovaries(self) -> bool:

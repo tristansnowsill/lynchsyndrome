@@ -58,7 +58,7 @@ class ForceTwoStageRRGS(Intervention):
 
         # If they still have ovaries, do a bilateral oophorectomy
         if individual.has_ovaries:
-            env.process(individual.run_rrgs(RiskReducingSurgery.BILATERAL_SALPINGO_OOPHORECTOMY))
+            env.process(individual.run_rrgs(RiskReducingSurgery.BILATERAL_OOPHORECTOMY))
 
 
 class ForceRiskReducingHBSO(Intervention):

@@ -148,8 +148,10 @@ class Costing:
     def event_cost_risk_reducing_surgery(self, metadata: RiskReducingSurgeryMetadata, _: Individual):
         mapping = {
             RiskReducingSurgery.HBSO: self.params['cost.hysterectomy_bso'],
+            RiskReducingSurgery.HBS: self.params['cost.hysterectomy_bs'],
             RiskReducingSurgery.HYSTERECTOMY: self.params['cost.hysterectomy'],
-            RiskReducingSurgery.BSO: self.params['cost.bso']
+            RiskReducingSurgery.BSO: self.params['cost.bso'],
+            RiskReducingSurgery.BILATERAL_OOPHORECTOMY: self.params['cost.bo'],
         }
         return mapping[metadata.surgery]
     

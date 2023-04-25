@@ -205,7 +205,7 @@ class Benefits:
                     current_surg_str = 'hbso'
                 elif md.surgery is RiskReducingSurgery.BSO and current_surg_str == '':
                     current_surg_str = 'bso'
-                elif md.surgery is RiskReducingSurgery.BSO and current_surg_str in ['hyst', 'hbs']:
+                elif md.surgery in [RiskReducingSurgery.BILATERAL_OOPHORECTOMY, RiskReducingSurgery.BSO] and current_surg_str in ['hyst', 'hbs']:
                     current_surg_str = 'hbso'
                 else:
                     logging.warning(

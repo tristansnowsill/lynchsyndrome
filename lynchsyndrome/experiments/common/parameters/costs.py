@@ -103,8 +103,10 @@ def _params_colonoscopy_costs(rng: numpy.random.Generator) -> ParameterSource:
 def _params_risk_reducing_surgery_costs(rng: numpy.random.Generator) -> ParameterSource:
     return CallableParameterSource(rng, {
         'cost.hysterectomy': lambda _rng: _rng.gamma(shape=100,scale=62.8103),
+        'cost.hysterectomy_bs': lambda _rng: _rng.gamma(shape=100,scale=62.8103),
         'cost.hysterectomy_bso': lambda _rng: _rng.gamma(shape=100,scale=62.8103),
         'cost.bso': lambda _rng: _rng.gamma(shape=100,scale=46.6022),
+        'cost.bo': lambda _rng: _rng.gamma(shape=100,scale=46.6022),
         'cost.hrt.highdose': lambda _rng: _rng.gamma(shape=100,scale=0.7457),
         'cost.hrt.lowdose': lambda _rng: _rng.gamma(shape=100,scale=0.6005)
     })
